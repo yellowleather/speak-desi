@@ -132,7 +132,8 @@ async function stopRecording() {
         // Read config
         const config = vscode.workspace.getConfiguration('sarvamVoiceToText');
         const serviceUrl = config.get<string>('serviceUrl', 'http://localhost:48002');
-        const language = config.get<string>('language', 'unknown');
+        const language = config.get<string>('language', 'en-IN');
+        const mode = config.get<string>('mode', 'codemix');
 
         // Build multipart form
         const formData = new FormData();
@@ -141,6 +142,7 @@ async function stopRecording() {
             contentType: 'audio/wav',
         });
         formData.append('language', language);
+        formData.append('mode', mode);
 
         const response = await axios.post(`${serviceUrl}/transcribe`, formData, {
             headers: formData.getHeaders(),

@@ -109,14 +109,18 @@ Open VS Code settings (`Cmd+,`) and search for **"Speak Desi"**, or add these to
 ```json
 {
   "sarvamVoiceToText.serviceUrl": "http://localhost:48002",
-  "sarvamVoiceToText.language": "unknown"
+  "sarvamVoiceToText.language": "en-IN",
+  "sarvamVoiceToText.mode": "codemix"
 }
 ```
+
+These defaults work well for Indian English with code-mixed speech. Change them to suit your language — see the table below.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `sarvamVoiceToText.serviceUrl` | `http://localhost:48002` | URL of the running Sarvam service |
-| `sarvamVoiceToText.language` | `unknown` | BCP-47 language code. `unknown` = auto-detect. Examples: `en-IN`, `hi-IN`, `kn-IN`, `ta-IN`, `te-IN` |
+| `sarvamVoiceToText.language` | `en-IN` | BCP-47 language code. Change as needed — e.g. `hi-IN` (Hindi), `kn-IN` (Kannada), `ta-IN` (Tamil), `te-IN` (Telugu). Use `unknown` for auto-detection. |
+| `sarvamVoiceToText.mode` | `codemix` | `codemix` — code-mixed / Hinglish speech (recommended). `transcribe` — single language. `verbatim` — exact words, no normalisation. `translit` — romanise to Latin script. |
 
 ---
 

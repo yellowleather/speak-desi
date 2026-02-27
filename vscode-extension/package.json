@@ -48,8 +48,20 @@
         },
         "sarvamVoiceToText.language": {
           "type": "string",
-          "default": "unknown",
-          "description": "BCP-47 language code (e.g. 'en-IN', 'hi-IN', 'kn-IN'). Use 'unknown' for auto-detection."
+          "default": "en-IN",
+          "description": "BCP-47 language code (e.g. 'hi-IN', 'en-IN', 'kn-IN'). Use 'unknown' for auto-detection."
+        },
+        "sarvamVoiceToText.mode": {
+          "type": "string",
+          "default": "codemix",
+          "enum": ["transcribe", "codemix", "verbatim", "translit"],
+          "enumDescriptions": [
+            "Standard transcription in the original language",
+            "Code-mixed speech — handles Hinglish and other language blends",
+            "Exact word-for-word, preserving filler words and spoken numbers",
+            "Romanise (transliterate) speech to Latin script"
+          ],
+          "description": "Transcription mode."
         }
       }
     }

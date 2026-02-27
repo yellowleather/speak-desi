@@ -101,13 +101,15 @@ async def health_check():
 @app.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe(
     file: UploadFile = File(...),
-    language: Optional[str] = Form(default="unknown"),
+    language: Optional[str] = Form(default="en-IN"),
+    mode: Optional[str] = Form(default="codemix"),
 ):
     """
     Transcribe an audio file using Sarvam AI saaras:v3.
 
     - **file**: Audio file (wav, mp3, m4a, ogg, webm)
-    - **language**: BCP-47 language code (e.g. 'en-IN', 'hi-IN'). Use 'unknown' for auto-detection.
+    - **language**: BCP-47 language code (e.g. 'hi-IN', 'en-IN'). Use 'unknown' for auto-detection.
+    - **mode**: transcribe | codemix | verbatim | translit
     """
     if not SARVAM_API_KEY:
         raise HTTPException(status_code=500, detail="SARVAM_API_KEY is not configured")
@@ -125,13 +127,13 @@ async def transcribe(
         raise HTTPException(status_code=400, detail="Uploaded file is empty")
 
     audio_b64 = base64.b64encode(content).decode("utf-8")
-    logger.info(f"Transcribing {len(content)} bytes, language={language!r}")
+    logger.info(f"Transcribing {len(content)} bytes, language={language!r}, mode={mode!r}")
 
     try:
         client = AsyncSarvamAI(api_subscription_key=SARVAM_API_KEY)
         async with client.speech_to_text_streaming.connect(
             model="saaras:v3",
-            mode="transcribe",
+            mode=mode,
             language_code=language,
             high_vad_sensitivity=True,
         ) as ws:
