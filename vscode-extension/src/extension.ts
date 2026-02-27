@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create status bar item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     statusBarItem.command = 'sarvam-voice-to-text.record';
-    statusBarItem.text = '$(unmute) Speak Claude';
+    statusBarItem.text = '$(unmute) Speak Claude Sarvam';
     statusBarItem.tooltip = 'Click to start voice recording (Cmd+Shift+Space)';
     statusBarItem.show();
     context.subscriptions.push(statusBarItem);
@@ -175,7 +175,7 @@ async function insertText(text: string) {
 function resetRecordingState() {
     recordingProcess = null;
     recordingFile = null;
-    statusBarItem.text = '$(unmute) Speak Claude';
+    statusBarItem.text = '$(unmute) Speak Claude Sarvam';
     statusBarItem.tooltip = 'Click to start voice recording (Cmd+Shift+Space)';
     statusBarItem.backgroundColor = undefined;
 }
