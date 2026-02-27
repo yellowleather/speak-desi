@@ -3,8 +3,7 @@
   "displayName": "Speak Claude (Sarvam)",
   "description": "Voice-to-text input using Sarvam AI saaras:v3 for VS Code and Claude Code",
   "version": "1.0.0",
-  "publisher": "slycreator",
-  "icon": "icon.png",
+  "publisher": "yellowleather",
   "keywords": [
     "voice",
     "speech-to-text",
