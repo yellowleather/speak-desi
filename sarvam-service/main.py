@@ -6,6 +6,7 @@ FastAPI wrapper for Sarvam's saaras:v3 model
 import os
 import base64
 import logging
+import asyncio
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -138,7 +139,16 @@ async def transcribe(
             high_vad_sensitivity=True,
         ) as ws:
             await ws.transcribe(audio=audio_b64)
-            response = await ws.recv()
+            response = None
+            while True:
+                try:
+                    msg = await asyncio.wait_for(ws.recv(), timeout=5.0)
+                    response = msg
+                except asyncio.TimeoutError:
+                    break
+
+            if response is None:
+                raise HTTPException(status_code=500, detail="No response received from Sarvam API")
 
         transcript = extract_transcript(response)
         detected_language = extract_language(response)
