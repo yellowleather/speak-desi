@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  sarvam:
+    build:
+      context: ./sarvam-service
+      dockerfile: Dockerfile
+    container_name: speak-claude-sarvam
+    ports:
+      - "48002:48002"
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:48002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
