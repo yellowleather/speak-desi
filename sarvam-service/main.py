@@ -51,19 +51,40 @@ class HealthResponse(BaseModel):
 
 
 def extract_transcript(response) -> str:
-    """Extract transcript string from Sarvam response (handles various response shapes)."""
+    """Extract transcript string from Sarvam response.
+
+    The streaming response shape is:
+        response.type == 'data'
+        response.data  == SpeechToTextTranscriptionData(transcript=..., language_code=...)
+    """
+    logger.debug(f"Raw Sarvam response: {response!r}")
+    # Primary shape: response.data.transcript
+    if hasattr(response, "data"):
+        inner = response.data
+        if hasattr(inner, "transcript"):
+            return inner.transcript
+    # Flat shape (future-proofing)
     if hasattr(response, "transcript"):
         return response.transcript
+    # Dict shapes
     if isinstance(response, dict):
+        data = response.get("data", response)
+        if isinstance(data, dict):
+            return data.get("transcript", str(response))
         return response.get("transcript", str(response))
     return str(response)
 
 
 def extract_language(response) -> str:
     """Extract detected language code from Sarvam response."""
+    if hasattr(response, "data") and hasattr(response.data, "language_code"):
+        return response.data.language_code
     if hasattr(response, "language_code"):
         return response.language_code
     if isinstance(response, dict):
+        data = response.get("data", response)
+        if isinstance(data, dict):
+            return data.get("language_code", "unknown")
         return response.get("language_code", "unknown")
     return "unknown"
 

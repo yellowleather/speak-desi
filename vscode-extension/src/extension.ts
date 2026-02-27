@@ -163,9 +163,11 @@ async function insertText(text: string) {
         return;
     }
 
-    // Webview input (e.g. Claude Code chat) or terminal — clipboard + simulate paste
+    // Webview input (e.g. Claude Code chat) or terminal — clipboard + simulate paste.
+    // Small delay lets VS Code finish any focus transitions before the keystroke fires.
     await vscode.env.clipboard.writeText(text);
     if (process.platform === 'darwin') {
+        await new Promise(resolve => setTimeout(resolve, 100));
         spawn('osascript', ['-e', 'tell application "System Events" to keystroke "v" using command down']);
     } else {
         vscode.window.showInformationMessage('Text copied to clipboard — press Ctrl+V to paste.');
