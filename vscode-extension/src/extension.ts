@@ -9,6 +9,21 @@ import FormData from 'form-data';
 let recordingProcess: ChildProcess | null = null;
 let recordingFile: string | null = null;
 let statusBarItem: vscode.StatusBarItem;
+// Track where focus was when recording started so we can restore it at paste time
+let recordingStartedFromWebview = false;
+let recordingViewColumn: number | null = null;
+
+// Maps view column numbers to VS Code focus commands
+const GROUP_FOCUS_COMMANDS: Record<number, string> = {
+    1: 'workbench.action.focusFirstEditorGroup',
+    2: 'workbench.action.focusSecondEditorGroup',
+    3: 'workbench.action.focusThirdEditorGroup',
+    4: 'workbench.action.focusFourthEditorGroup',
+    5: 'workbench.action.focusFifthEditorGroup',
+    6: 'workbench.action.focusSixthEditorGroup',
+    7: 'workbench.action.focusSeventhEditorGroup',
+    8: 'workbench.action.focusEighthEditorGroup',
+};
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Sarvam Voice to Text extension activated');
@@ -16,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create status bar item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     statusBarItem.command = 'sarvam-voice-to-text.record';
-    statusBarItem.text = '$(unmute) Speak Claude Sarvam';
+    statusBarItem.text = '$(unmute) Speak Desi';
     statusBarItem.tooltip = 'Click to start voice recording (Cmd+Shift+Space)';
     statusBarItem.show();
     context.subscriptions.push(statusBarItem);
@@ -46,6 +61,13 @@ async function startRecording() {
                 }
             });
         });
+
+        // Capture focus context before recording starts so we can restore it at paste time.
+        // activeTextEditor is null when a webview (e.g. a chat panel) is focused.
+        recordingStartedFromWebview = !vscode.window.activeTextEditor;
+        recordingViewColumn = recordingStartedFromWebview
+            ? vscode.window.tabGroups.activeTabGroup.viewColumn
+            : null;
 
         // Create temporary file for recording
         recordingFile = path.join(os.tmpdir(), `sarvam-voice-${Date.now()}.wav`);
@@ -163,11 +185,20 @@ async function insertText(text: string) {
         return;
     }
 
-    // Webview input (e.g. Claude Code chat) or terminal — clipboard + simulate paste.
-    // Small delay lets VS Code finish any focus transitions before the keystroke fires.
+    // Webview input (e.g. a chat panel) — clipboard + simulate paste
     await vscode.env.clipboard.writeText(text);
     if (process.platform === 'darwin') {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Restore focus to the exact editor group (column) where recording started.
+        // This handles mouse-click triggers where the status bar click shifts OS-level
+        // focus away from the webview. Using the saved view column is precise and works
+        // correctly with any number of split panels.
+        if (recordingStartedFromWebview && recordingViewColumn !== null) {
+            const focusCmd = GROUP_FOCUS_COMMANDS[recordingViewColumn];
+            if (focusCmd) {
+                await vscode.commands.executeCommand(focusCmd);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+        }
         spawn('osascript', ['-e', 'tell application "System Events" to keystroke "v" using command down']);
     } else {
         vscode.window.showInformationMessage('Text copied to clipboard — press Ctrl+V to paste.');
@@ -177,7 +208,9 @@ async function insertText(text: string) {
 function resetRecordingState() {
     recordingProcess = null;
     recordingFile = null;
-    statusBarItem.text = '$(unmute) Speak Claude Sarvam';
+    recordingStartedFromWebview = false;
+    recordingViewColumn = null;
+    statusBarItem.text = '$(unmute) Speak Desi';
     statusBarItem.tooltip = 'Click to start voice recording (Cmd+Shift+Space)';
     statusBarItem.backgroundColor = undefined;
 }

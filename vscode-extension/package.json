@@ -1,14 +1,13 @@
 {
-  "name": "speak-claude-sarvam",
-  "displayName": "Speak Claude (Sarvam)",
-  "description": "Voice-to-text input using Sarvam AI saaras:v3 for VS Code and Claude Code",
+  "name": "speak-desi",
+  "displayName": "Speak Desi",
+  "description": "Voice-to-text for VS Code using Sarvam AI saaras:v3 — optimised for Indian languages",
   "version": "1.0.0",
   "publisher": "yellowleather",
   "keywords": [
     "voice",
     "speech-to-text",
     "sarvam",
-    "claude",
     "ai",
     "transcription",
     "voice-input",
@@ -29,7 +28,7 @@
     "commands": [
       {
         "command": "sarvam-voice-to-text.record",
-        "title": "Sarvam Voice to Text: Start Recording"
+        "title": "Speak Desi: Start Recording"
       }
     ],
     "keybindings": [
@@ -40,7 +39,7 @@
       }
     ],
     "configuration": {
-      "title": "Sarvam Voice to Text",
+      "title": "Speak Desi",
       "properties": {
         "sarvamVoiceToText.serviceUrl": {
           "type": "string",
