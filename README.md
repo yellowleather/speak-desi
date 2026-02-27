@@ -1,6 +1,6 @@
-# Speak Claude (Sarvam)
+# Speak Desi
 
-Voice-to-text for VS Code and Claude Code, powered by [Sarvam AI](https://www.sarvam.ai/) `saaras:v3`. Press a key, speak, and your words appear at the cursor — in any editor, terminal, or the Claude Code chat input.
+Voice-to-text for VS Code powered by [Sarvam AI](https://www.sarvam.ai/) `saaras:v3`. Press a key, speak, and your words appear at the cursor — in any editor, terminal, or chat panel.
 
 Works great for Indian languages (Hindi, Kannada, Tamil, Telugu, etc.) as well as English.
 
@@ -76,8 +76,8 @@ uvicorn main:app --host 0.0.0.0 --port 48002
 ```bash
 cd vscode-extension
 npm install
-npm run package          # produces speak-claude-sarvam-1.0.0.vsix
-code --install-extension speak-claude-sarvam-1.0.0.vsix
+npm run package          # produces speak-desi-1.0.0.vsix
+code --install-extension speak-desi-1.0.0.vsix
 ```
 
 Then **reload VS Code** (`Cmd+Shift+P` → "Reload Window").
@@ -90,21 +90,21 @@ Then **reload VS Code** (`Cmd+Shift+P` → "Reload Window").
 |--------|-----|-----------------|
 | Start / stop recording | `Cmd+Shift+Space` | `Ctrl+Shift+Space` |
 
-You can also click the **"Speak Claude"** button in the VS Code status bar (bottom-right).
+You can also click the **"Speak Desi"** button in the VS Code status bar (bottom-right).
 
 **Workflow:**
-1. Place your cursor where you want the text (editor, Claude Code chat, terminal, etc.)
+1. Place your cursor where you want the text (editor, chat panel, terminal, etc.)
 2. Press `Cmd+Shift+Space` — status bar turns red and shows "🎤 Recording..."
 3. Speak
 4. Press `Cmd+Shift+Space` again — audio is sent to Sarvam, text is inserted at cursor
 
-> **Claude Code chat tip:** Press `Esc` to focus the Claude Code input field before recording, then the transcribed text will be inserted directly into it.
+The extension remembers which panel was focused when you started recording and restores focus before pasting, so clicking the status bar button works correctly even with multiple split panels open.
 
 ---
 
 ## Configuration
 
-Open VS Code settings (`Cmd+,`) and search for **"Sarvam Voice"**, or add these to your `settings.json`:
+Open VS Code settings (`Cmd+,`) and search for **"Speak Desi"**, or add these to your `settings.json`:
 
 ```json
 {
